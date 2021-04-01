@@ -1,0 +1,45 @@
+{
+    "challenge_0": {
+        "id": 1,
+        "date": "03/31/2021",
+        "name": "Evaluate the limit.",
+        "body": {
+            "text": "The degree of the polynomial #f0;",
+            "formulas": {
+                "0": "$$x^7+5x^3-3x^2+2x$$"
+            },
+            "images": "false",
+            "graphs": "false"
+        },
+        "difficulties": 2,
+        "status": "Workin on",
+        "athor": "Author Name",
+        "topics": {
+            "0": "algebra",
+            "1": "Calculus"
+        }
+    },
+
+    "challenge_1": {
+        "id": 2,
+        "date": "03/31/2021",
+        "name": "Evaluate the limit.",
+        "body": {
+            "text": "The degree of the polynomial #f0;",
+            "formulas": {
+                "0": "$$x^7+5x^3-3x^2+2x$$"
+            },
+            "images": "false",
+            "graphs": "false"
+        },
+        "difficulties": 2,
+        "status": "Workin on",
+        "athor": "Author Name",
+        "topics": {
+            "0": "algebra",
+            "1": "Calculus"
+        }
+    }
+
+    
+}
