@@ -28,13 +28,16 @@ class MongoController {
     async getDocumentById(id) {
         const database = this.client.db('MathWarsChalleges');
         const challenges = database.collection('Challenges');
+        let cursor = {};
 
         try {
-            await challenges.findOne(id).then(result => console.log(result))
-
+            console.log(id);
+            cursor = await challenges.findOne(id);
+            
+        
         } finally {
             this.client.close()
-
+            return cursor;
         }
     }
 

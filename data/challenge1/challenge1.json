@@ -10,7 +10,7 @@
         "shortTask":"find c",
         "answerType":"number",
         "answer":"17",
-        "images": "../data/triangle.png",
+        "images": "data/triangle.png",
         "graphs": "false"
     },
     "difficulty": 2,

@@ -4,3 +4,38 @@ POST http://127.0.0.1:8125/challenge
     "id":"1",
     "answer":"17"
 }
+
+{
+  host: '127.0.0.1:8125',
+  connection: 'keep-alive',
+  accept: '*/*',
+  'access-control-request-method': 'POST',
+  'access-control-request-headers': 'content-type',
+  origin: 'http://localhost:8080',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'cross-site',
+  'sec-fetch-dest': 'empty',
+  referer: 'http://localhost:8080/',
+  'accept-encoding': 'gzip, deflate, br',
+  'accept-language': 'en-US,en;q=0.9,ru;q=0.8,uk;q=0.7'
+}
+
+{
+  host: '127.0.0.1:8125',
+  connection: 'keep-alive',
+  'content-length': '8',
+  'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+  dnt: '1',
+  'sec-ch-ua-mobile': '?0',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+  'content-type': 'application/x-www-form-urlencoded',
+  accept: '*/*',
+  origin: 'http://localhost:8080',
+  'sec-fetch-site': 'cross-site',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-dest': 'empty',
+  referer: 'http://localhost:8080/',
+  'accept-encoding': 'gzip, deflate, br',
+  'accept-language': 'en-US,en;q=0.9,ru;q=0.8,uk;q=0.7'
+}
