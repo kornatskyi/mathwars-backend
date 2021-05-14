@@ -6,7 +6,7 @@ const { log } = require('console');
 
 const ATLAS_URI = "mongodb+srv://Admin23:1323@cluster0.yhywr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
-const newConroller = new MongoController(ATLAS_URI);
+
 
 
 
@@ -25,7 +25,7 @@ http.createServer(function (request, response) {
 
             data += chunk;
         }).on('end', function () {
-
+            const newConroller = new MongoController(ATLAS_URI);
             // console.log(JSON.parse(data.id));
 
             newConroller.run(() => {

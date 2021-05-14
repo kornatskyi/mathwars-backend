@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/kornatskyi/mathwars-backend#readme",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "mongodb": "^3.6.6"
   }
 }
