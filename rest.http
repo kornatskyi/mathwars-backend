@@ -1,0 +1,6 @@
+POST http://127.0.0.1:8125/challenge
+
+{
+    "id":"1",
+    "answer":"17"
+}
