@@ -14,7 +14,7 @@ class MongoController {
             await this.client.connect();
             await callBack()
         } finally {
-
+            console.log("connected");
         }
     }
 
@@ -31,6 +31,21 @@ class MongoController {
         } finally {
             this.client.close()
             return cursor;
+        }
+    }
+
+    async insertDocument(object) {
+        const database = this.client.db('MathWarsChalleges');
+        const challenges = database.collection('Challenges');
+      
+
+        try {
+            await challenges.insertOne(object);
+            
+        
+        } finally {
+            this.client.close()
+            
         }
     }
 }
