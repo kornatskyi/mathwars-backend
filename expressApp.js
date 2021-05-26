@@ -3,7 +3,7 @@ const util = require('util');
 const path = require('path');
 const copyFile = util.promisify(fs.copyFile);
 
-
+const bodyParser = require('body-parser')
 
 
 
@@ -25,19 +25,47 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 })
-// const upload = multer({ dest: 'images/' }); //One way to do or with more specific settings us below
+
 const upload = multer({ storage: storage });
 
 
 
 
 app.use(cors())
+
+
+//use instead body parser
+app.use(express.json())
+app.use(express.text())
+
 //Serve files response 
 app.use(express.static('images'))
 
 app.get('/', (req, res) => {
     console.log("Hello");
     res.send('Hello World!')
+})
+
+
+app.post('/answer', (req, res) => {
+
+
+    console.log(req.body.answer);
+
+    const controller = new MongoController(ATLAS_URI)
+    controller.run(() => {
+        controller.getDocumentById(JSON.parse(req.body.id))
+            .then(challenge => {
+                console.log(challenge);
+                if (challenge.body.answer === req.body.answer) {
+                    res.send(true);
+                } else {
+                    res.send(false)
+                }
+
+            })
+    })
+
 })
 
 app.post('/challenge', (req, res) => {
@@ -62,7 +90,7 @@ app.post('/challenge', (req, res) => {
 
 function newChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
 
-    const challenge = {
+    return {
         id: 4,
         date: new Date(),
         name: name,
@@ -83,8 +111,6 @@ function newChallenge({ name, body, shortTask, answer, authorName, topics, tags 
         topics: topics,
         tags: tags,
     };
-
-    return challenge;
 }
 
 app.post('/newchallenge', upload.single('imageName'), (req, res) => {
@@ -95,9 +121,6 @@ app.post('/newchallenge', upload.single('imageName'), (req, res) => {
     controller.run(() => {
         controller.insertDocument(newChallenge(req.body, req.file.filename))
     });
-   
-    
-    // .then(controller.insertDocument(newChallenge(req.body, req.file.filename)))
 
     res.status(200)
     res.send()
