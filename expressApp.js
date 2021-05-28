@@ -69,20 +69,14 @@ app.post('/answer', (req, res) => {
 })
 
 app.post('/challenge', (req, res) => {
-    //Get data from request. Another way is use body parser.
-    let data = '';
-    req.on('data', chunk => {
-        data += chunk;
-    })
-    req.on('end', () => {
-        // console.log(JSON.parse(data));
-        const controller = new MongoController(ATLAS_URI)
-        controller.run(() => {
-            controller.getDocumentById(JSON.parse(data))
-                .then(challenge => {
-                    res.send(challenge)
-                })
-        })
+
+    console.log(req.body);
+    const controller = new MongoController(ATLAS_URI)
+    controller.run(() => {
+        controller.getDocumentById(req.body)
+            .then(challenge => {
+                res.send(challenge)
+            })
     })
 })
 
@@ -94,18 +88,10 @@ function newChallenge({ name, body, shortTask, answer, authorName, topics, tags 
         id: 4,
         date: new Date(),
         name: name,
-        body: {
-            text: body,
-            formulas: {
-                formula1:
-                    '<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi><mo>&#xA0;</mo><mo>=</mo><mo>&#xA0;</mo><mn>8</mn><mo>,</mo><mo>&#xA0;</mo><mi>b</mi><mo>&#xA0;</mo><mo>=</mo><mo>&#xA0;</mo><mn>15</mn></math>',
-            },
-            shortTask: shortTask,
-            answerType: "number",
-            answer: answer,
-            images: imageName, //pull out file name frome the path
-            graphs: "false",
-        },
+        body: body,
+        shortTask: shortTask,
+        answer: answer,
+        images: imageName, //pull out file name frome the path
         difficulty: 2,
         author: authorName,
         topics: topics,
@@ -113,16 +99,31 @@ function newChallenge({ name, body, shortTask, answer, authorName, topics, tags 
     };
 }
 
-app.post('/newchallenge', upload.single('imageName'), (req, res) => {
+app.post('/newchallenge', upload.single('image'), (req, res) => {
 
-    console.log(req.file.filename);
+    // console.log(req.file);
+    // console.log(req.body);
+
+    const challenge = req.body;
+    // console.log(challenge);
+
+    //Check if all fields are fieled
+    // for (let field in challenge) {
+    //     if (!challenge[field]) {
+
+    //         res.status(400)
+    //         res.send("Wrong or empty fields")
+    //     }
+    // }
+    console.log(newChallenge(req.body, req.file.filename || "no file"));
+
     const controller = new MongoController(ATLAS_URI);
 
     controller.run(() => {
-        controller.insertDocument(newChallenge(req.body, req.file.filename))
+        controller.insertDocument(newChallenge(req.body, req.file.filename || "no file"))
     });
 
-    res.status(200)
+
     res.send()
 
 
