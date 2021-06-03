@@ -22,7 +22,8 @@ const storage = multer.diskStorage({
         cb(null, "./images");
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname);
+        // Adding unique name to the file
+        cb(null, new Date().getTime() + file.originalname);
     }
 })
 
@@ -75,17 +76,32 @@ app.post('/challenge', (req, res) => {
     controller.run(() => {
         controller.getDocumentById(req.body)
             .then(challenge => {
+                console.log(challenge);
                 res.send(challenge)
             })
     })
 })
 
 
+app.post('/challenges', (req, res) => {
+
+    console.log(req.body);
+    const controller = new MongoController(ATLAS_URI)
+    controller.run(() => {
+        controller.getDocuments()
+            .then(challenges => {
+               console.log(challenges);
+                res.send(challenges)
+            })
+    })
+})
+
+
+
 
 function newChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
 
     return {
-        id: 4,
         date: new Date(),
         name: name,
         body: body,
@@ -104,27 +120,25 @@ app.post('/newchallenge', upload.single('image'), (req, res) => {
     // console.log(req.file);
     // console.log(req.body);
 
-    const challenge = req.body;
-    // console.log(challenge);
+    try {
+        console.log(newChallenge(req.body, req.file ? req.file.filename : "no file"));
 
-    //Check if all fields are fieled
-    // for (let field in challenge) {
-    //     if (!challenge[field]) {
+        const controller = new MongoController(ATLAS_URI);
 
-    //         res.status(400)
-    //         res.send("Wrong or empty fields")
-    //     }
-    // }
-    console.log(newChallenge(req.body, req.file.filename || "no file"));
+        controller.run(() => {
+            controller.insertDocument(newChallenge(req.body, req.file ? req.file.filename : "no file"))
+        });
+    } catch {
+        res.sendStatus(500)
 
-    const controller = new MongoController(ATLAS_URI);
-
-    controller.run(() => {
-        controller.insertDocument(newChallenge(req.body, req.file.filename || "no file"))
-    });
+    }
+    
+    res.status(200)
+    res.send('Got your challenge!')
 
 
-    res.send()
+
+
 
 
 

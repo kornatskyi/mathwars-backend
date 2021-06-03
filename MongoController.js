@@ -24,28 +24,42 @@ class MongoController {
         let cursor = {};
 
         try {
-            console.log(id);
             cursor = await challenges.findOne(id);
-            
-        
+
+
         } finally {
             this.client.close()
-            return cursor;
         }
+        return cursor;
+    }
+
+    async getDocuments(numberOfDocuments) {
+        const database = this.client.db('MathWarsChalleges');
+        const challenges = database.collection('Challenges');
+        let result = {};
+
+        try {
+            result = await challenges.find({}).toArray();
+
+        } finally {
+            this.client.close()
+        }
+        return result;
+
     }
 
     async insertDocument(object) {
         const database = this.client.db('MathWarsChalleges');
         const challenges = database.collection('Challenges');
-      
+
 
         try {
             await challenges.insertOne(object);
-            
-        
+
+
         } finally {
             this.client.close()
-            
+
         }
     }
 }
