@@ -20,8 +20,14 @@ const ATLAS_URI = "mongodb+srv://Admin23:1323@cluster0.yhywr.mongodb.net/MathWar
 //DB exports
 const mongoose = require('mongoose');
 const Challenge = require('./schemas/Challenge')
-const MongoController = require('./MongoController.js');
 //************************************************************ */
+
+
+
+/**Create challenge function */
+const createChallenge = require('./createChallenge')
+//************************************************************ */
+
 
 
 //File parser
@@ -96,53 +102,6 @@ app.post('/answer', (req, res) => {
 
 })
 
-// app.post('/challenge', (req, res) => {
-
-//     console.log(req.body);
-//     const controller = new MongoController(ATLAS_URI)
-//     controller.run(() => {
-//         controller.getDocumentById(req.body)
-//             .then(challenge => {
-//                 console.log(challenge);
-//                 res.send(challenge)
-//             })
-//     })
-// })
-
-
-app.post('/challenges', (req, res) => {
-
-    console.log(req.body);
-
-    Challenge.find({}).then((doc) => {
-        res.send(doc)
-    }).catch((err) => {
-        console.log(err);
-    })
-
-})
-
-
-
-
-function createChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
-    return {
-        date: new Date(),
-        name: name,
-        body: body,
-        shortTask: shortTask,
-        answer: answer,
-        images: imageName, //pull out file name frome the path
-        difficulty: 1,
-        author: authorName,
-        topics: topics,
-        tags: tags,
-    };
-}
-
-
-
-
 
 
 
@@ -177,7 +136,7 @@ app.post('/newchallenge', upload.single('file'), (req, res) => {
 //Get max n docs by filter
 app.post('/10challenges', upload.none(), (req, res) => {
 
-    console.log({...req.body});
+    console.log({ ...req.body });
 
 
     // const challenge = new Challenge({ name: 'asdf' });
@@ -185,6 +144,30 @@ app.post('/10challenges', upload.none(), (req, res) => {
     //     if (err) console.log(err);
     //     console.log(chlg);
     // })
+})
+
+
+
+app.post('/challenges', (req, res) => {
+
+console.log({...req.body});
+const filter = {...req.body}
+const wordRegex = new RegExp(filter.name, "g")
+
+//sort by newest
+Challenge.find({name: wordRegex}).sort({date:-1}).exec(function(err, docs) { 
+    if(err) {
+        console.log(err);
+        res.send(err.message)
+    }
+    res.send(docs);
+ });
+    // Challenge.find({...req.body}).then((doc) => {
+    //     res.send(doc)
+    // }).catch((err) => {
+    //     console.log(err);
+    // })
+
 })
 
 

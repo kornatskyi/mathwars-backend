@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 
 
+
+
 const Challenge = new mongoose.Schema({
   date: Date,
   name: String,
