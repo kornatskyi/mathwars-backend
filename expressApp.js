@@ -47,6 +47,12 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+//hendle form data by using multer
+app.post('/test', upload.none(), (req, res) => {
+
+    console.log({...req.body});
+    res.send("Test!")
+})
 
 app.post('/answer', (req, res) => {
 
@@ -90,7 +96,7 @@ app.post('/challenges', (req, res) => {
     controller.run(() => {
         controller.getDocuments()
             .then(challenges => {
-               console.log(challenges);
+                console.log(challenges);
                 res.send(challenges)
             })
     })
@@ -99,8 +105,7 @@ app.post('/challenges', (req, res) => {
 
 
 
-function newChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
-
+function createChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
     return {
         date: new Date(),
         name: name,
@@ -108,41 +113,68 @@ function newChallenge({ name, body, shortTask, answer, authorName, topics, tags 
         shortTask: shortTask,
         answer: answer,
         images: imageName, //pull out file name frome the path
-        difficulty: 2,
+        difficulty: 1,
         author: authorName,
         topics: topics,
         tags: tags,
     };
 }
 
-app.post('/newchallenge', upload.single('image'), (req, res) => {
+app.post('/newchallenge', upload.single('file'), (req, res) => {
 
     // console.log(req.file);
     // console.log(req.body);
 
+    const newChallenge = createChallenge(req.body, req.file ? req.file.filename : "no file");
+
+    //check if all properties field
+    for (const key in newChallenge) {
+        console.log(newChallenge[key]);
+        if (!newChallenge[key]) {
+            res.status(500)
+            res.send(key + " is empty value")
+            return;
+        }
+    }
     try {
-        console.log(newChallenge(req.body, req.file ? req.file.filename : "no file"));
+        console.log(newChallenge);
 
         const controller = new MongoController(ATLAS_URI);
 
         controller.run(() => {
-            controller.insertDocument(newChallenge(req.body, req.file ? req.file.filename : "no file"))
+            controller.insertDocument(newChallenge)
         });
     } catch {
         res.sendStatus(500)
 
     }
-    
+
     res.status(200)
     res.send('Got your challenge!')
-
-
-
-
-
-
-
 });
+
+
+app.post('/parse', upload.single('file'), (req, res) => {
+
+    console.log(req.file);
+    console.log(req.body);
+
+    // fetch('https://www5b.wolframalpha.com/input/wpg/problem.jsp?count=1&difficulty=Advanced&load=1&s=19&sessionID=MSP14051276b3h275ea686a00004i3bd5942dff83bd&type=BasicIntegrate').then(response => response.text()).then(data => console.log(data))
+
+
+    https://www5b.wolframalpha.com/Calculate/MSP/MSP17271276b3h275ea686a00006ah543cbi6651b28?MSPStoreType=image/gif&s=19
+
+    function parser() {
+        const problemsArray = [];
+        
+        fetch('https://www5b.wolframalpha.com/input/wpg/problem.jsp?count=1&difficulty=Advanced&load=1&s=19&sessionID=MSP14051276b3h275ea686a00004i3bd5942dff85bd&type=BasicIntegrate').then(response => response.text()).then(data => console.log(data))
+
+
+    }
+
+    res.status(200)
+    res.send('Got your challenge!')
+})
 
 
 app.listen(port, () => {
