@@ -110,18 +110,17 @@ app.post('/answer', (req, res) => {
 // })
 
 
-// app.post('/challenges', (req, res) => {
+app.post('/challenges', (req, res) => {
 
-//     console.log(req.body);
-//     const controller = new MongoController(ATLAS_URI)
-//     controller.run(() => {
-//         controller.getDocuments()
-//             .then(challenges => {
-//                 console.log(challenges);
-//                 res.send(challenges)
-//             })
-//     })
-// })
+    console.log(req.body);
+
+    Challenge.find({}).then((doc) => {
+        res.send(doc)
+    }).catch((err) => {
+        console.log(err);
+    })
+
+})
 
 
 
