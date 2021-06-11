@@ -7,16 +7,25 @@ const bodyParser = require('body-parser')
 
 
 
+/**Server exports*/
 const express = require('express')
 const app = express()
 const cors = require('cors');
 const port = 3000
-const ATLAS_URI = "mongodb+srv://Admin23:1323@cluster0.yhywr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const ATLAS_URI = "mongodb+srv://Admin23:1323@cluster0.yhywr.mongodb.net/MathWarsChallenges?retryWrites=true&w=majority";
+//************************************************************ */
 
+
+
+//DB exports
+const mongoose = require('mongoose');
+const Challenge = require('./schemas/Challenge')
 const MongoController = require('./MongoController.js');
+//************************************************************ */
 
+
+//File parser
 const multer = require('multer');
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "./images");
@@ -26,9 +35,8 @@ const storage = multer.diskStorage({
         cb(null, new Date().getTime() + file.originalname);
     }
 })
-
 const upload = multer({ storage: storage });
-
+//************************************************************ */
 
 
 
@@ -44,14 +52,27 @@ app.use(express.static('images'))
 
 app.get('/', (req, res) => {
     console.log("Hello");
+
     res.send('Hello World!')
 })
 
+
+mongoose.connect(ATLAS_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+    // we're connected!
+});
+
+
+
+
+
 //hendle form data by using multer
 app.post('/test', upload.none(), (req, res) => {
-
-    console.log({...req.body});
-    res.send("Test!")
+    console.log(req.body);
+    // console.log({...req.body});
+    res.send("Test complete!")
 })
 
 app.post('/answer', (req, res) => {
@@ -75,32 +96,32 @@ app.post('/answer', (req, res) => {
 
 })
 
-app.post('/challenge', (req, res) => {
+// app.post('/challenge', (req, res) => {
 
-    console.log(req.body);
-    const controller = new MongoController(ATLAS_URI)
-    controller.run(() => {
-        controller.getDocumentById(req.body)
-            .then(challenge => {
-                console.log(challenge);
-                res.send(challenge)
-            })
-    })
-})
+//     console.log(req.body);
+//     const controller = new MongoController(ATLAS_URI)
+//     controller.run(() => {
+//         controller.getDocumentById(req.body)
+//             .then(challenge => {
+//                 console.log(challenge);
+//                 res.send(challenge)
+//             })
+//     })
+// })
 
 
-app.post('/challenges', (req, res) => {
+// app.post('/challenges', (req, res) => {
 
-    console.log(req.body);
-    const controller = new MongoController(ATLAS_URI)
-    controller.run(() => {
-        controller.getDocuments()
-            .then(challenges => {
-                console.log(challenges);
-                res.send(challenges)
-            })
-    })
-})
+//     console.log(req.body);
+//     const controller = new MongoController(ATLAS_URI)
+//     controller.run(() => {
+//         controller.getDocuments()
+//             .then(challenges => {
+//                 console.log(challenges);
+//                 res.send(challenges)
+//             })
+//     })
+// })
 
 
 
@@ -120,10 +141,16 @@ function createChallenge({ name, body, shortTask, answer, authorName, topics, ta
     };
 }
 
+
+
+
+
+
+
 app.post('/newchallenge', upload.single('file'), (req, res) => {
 
-    // console.log(req.file);
-    // console.log(req.body);
+    console.log(req.file);
+    console.log(req.body);
 
     const newChallenge = createChallenge(req.body, req.file ? req.file.filename : "no file");
 
@@ -136,45 +163,31 @@ app.post('/newchallenge', upload.single('file'), (req, res) => {
             return;
         }
     }
-    try {
-        console.log(newChallenge);
 
-        const controller = new MongoController(ATLAS_URI);
+    const challenge = new Challenge(newChallenge);
 
-        controller.run(() => {
-            controller.insertDocument(newChallenge)
-        });
-    } catch {
-        res.sendStatus(500)
-
-    }
-
+    challenge.save(function (err, challenge) {
+        if (err) return console.error(err);
+        console.log("Saved");
+    });
     res.status(200)
     res.send('Got your challenge!')
 });
 
 
-app.post('/parse', upload.single('file'), (req, res) => {
+//Get max n docs by filter
+app.post('/10challenges', upload.none(), (req, res) => {
 
-    console.log(req.file);
-    console.log(req.body);
-
-    // fetch('https://www5b.wolframalpha.com/input/wpg/problem.jsp?count=1&difficulty=Advanced&load=1&s=19&sessionID=MSP14051276b3h275ea686a00004i3bd5942dff83bd&type=BasicIntegrate').then(response => response.text()).then(data => console.log(data))
+    console.log({...req.body});
 
 
-    https://www5b.wolframalpha.com/Calculate/MSP/MSP17271276b3h275ea686a00006ah543cbi6651b28?MSPStoreType=image/gif&s=19
-
-    function parser() {
-        const problemsArray = [];
-        
-        fetch('https://www5b.wolframalpha.com/input/wpg/problem.jsp?count=1&difficulty=Advanced&load=1&s=19&sessionID=MSP14051276b3h275ea686a00004i3bd5942dff85bd&type=BasicIntegrate').then(response => response.text()).then(data => console.log(data))
-
-
-    }
-
-    res.status(200)
-    res.send('Got your challenge!')
+    // const challenge = new Challenge({ name: 'asdf' });
+    // challenge.findByName().then((chlg, err) => {
+    //     if (err) console.log(err);
+    //     console.log(chlg);
+    // })
 })
+
 
 
 app.listen(port, () => {
