@@ -150,18 +150,33 @@ app.post('/10challenges', upload.none(), (req, res) => {
 
 app.post('/challenges', (req, res) => {
 
-console.log({...req.body});
-const filter = {...req.body}
-const wordRegex = new RegExp(filter.name, "g")
-
-//sort by newest
-Challenge.find({name: wordRegex}).sort({date:-1}).exec(function(err, docs) { 
-    if(err) {
-        console.log(err);
-        res.send(err.message)
+    console.log({ ...req.body });
+    const filter = { ...req.body }
+    const localFilter = {};
+    const sort = filter.sortBy === 'new' ? -1 : 1;
+    if (filter.name) {
+        const wordRegex = new RegExp(filter.name, "g");
+        localFilter.body = wordRegex;
     }
-    res.send(docs);
- });
+    if (filter.topic) {
+        const wordRegex = new RegExp(filter.topic, "g");
+        localFilter.topics = wordRegex;
+    }
+    if (filter.lvl) {
+        const wordRegex = new RegExp(filter.lvl, "g");
+        localFilter.difficulty = wordRegex;
+    }
+
+
+
+    //sort by newest
+    Challenge.find(localFilter).sort({ date: sort }).exec(function (err, docs) {
+        if (err) {
+            console.log(err);
+            res.send(err.message)
+        }
+        res.send(docs);
+    });
     // Challenge.find({...req.body}).then((doc) => {
     //     res.send(doc)
     // }).catch((err) => {
