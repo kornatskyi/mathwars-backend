@@ -112,7 +112,7 @@ app.post('/newchallenge', upload.single('file'), (req, res) => {
 
     const newChallenge = createChallenge(req.body, req.file ? req.file.filename : "no file");
 
-    //check if all properties field
+    // check if all properties field
     for (const key in newChallenge) {
         console.log(newChallenge[key]);
         if (!newChallenge[key]) {
@@ -121,6 +121,7 @@ app.post('/newchallenge', upload.single('file'), (req, res) => {
             return;
         }
     }
+    console.log(newChallenge);
 
     const challenge = new Challenge(newChallenge);
 

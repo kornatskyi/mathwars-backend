@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Wolfram|Alpha</title>
+  <!--<link rel="shortcut icon" href="/favicon_calculate.png" type="image/png" />-->
+  <style>
+    html {
+        background-color: #FFF;
+        height: 100%;
+    }
+    body {
+        background-color: #FFF;
+        height: 100%;
+        overflow:hidden;
+    }
+    #homebox {
+        background: transparent url(/images/505tile.jpg) repeat-x scroll 0 0;
+        height:900px;
+        width:1800px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -330px auto auto -830px;
+    }
+    #load {
+        background: transparent url(/images/505.jpg) no-repeat scroll 0 0;
+        width: 518px;
+        height: 607px;
+        position: absolute;
+        font-family:Arial;
+        top:0px;
+        left:570px;
+    }
+    #tryagain {
+        color:transparent;
+        display:block;
+        height:20px;
+        left:377px;
+        position:absolute;
+        top:203px;
+        width:160px;
+    }
+#load .contents {
+  width: 175px;
+  position:absolute;
+  top: 262px;
+  left: 284px;
+}
+
+#load h2 {
+  font-size: 12px;
+  font-weight: bold;
+  color: #DB0303;
+  width: 160px;
+}
+
+#load h2 span.wa {    
+  color: #747474;   
+}                       
+
+#load p {           
+  color: #777777;       
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+#load p a {                
+  font-weight: bold;
+  color: #DB0303 !important;
+  text-decoration:none;
+}           
+
+#load p a:hover {
+  color: #FE6518 !important;
+}
+  </style>
+</head>
+<body style="display:none;">
+ <div id="homebox">
+  <div id="load">
+    <div class="contents">
+           <h2>This Wolfram<span class="wa">|</span>Alpha server is temporarily unavailable.</h2>
+           <p>Click <a href="" id="retry-link">here</a> to try another server.</p>
+    </div>
+  </div>
+ </div>
+</body>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+
+/**
+ * Create a cookie with the given name and value and other optional parameters.
+ *
+ * @example $.cookie('the_cookie', 'the_value');
+ * @desc Set the value of a cookie.
+ * @example $.cookie('the_cookie', 'the_value', { expires: 7, path: '/', domain: 'jquery.com', secure: true });
+ * @desc Create a cookie with all available options.
+ * @example $.cookie('the_cookie', 'the_value');
+ * @desc Create a session cookie.
+ * @example $.cookie('the_cookie', null);
+ * @desc Delete a cookie by passing null as value. Keep in mind that you have to use the same path and domain
+ *       used when the cookie was set.
+ *
+ * @param String name The name of the cookie.
+ * @param String value The value of the cookie.
+ * @param Object options An object literal containing key/value pairs to provide optional cookie attributes.
+ * @option Number|Date expires Either an integer specifying the expiration date from now on in days or a Date object.
+ * If a negative value is specified (e.g. a date in the past), the cookie will be deleted.
+ * If set to null or omitted, the cookie will be a session cookie and will not be retained
+ * when the the browser exits.
+ * @option String path The value of the path atribute of the cookie (default: path of page that created the cookie).
+ * @option String domain The value of the domain attribute of the cookie (default: domain of page that created the cookie).
+ * @option Boolean secure If true, the secure attribute of the cookie will be set and the cookie transmission will
+ * require a secure protocol (like HTTPS).
+ * @type undefined
+ *
+ * @name $.cookie
+ * @cat Plugins/Cookie
+ */
+/**
+ * Get the value of a cookie with the given name.
+ *
+ * @example $.cookie('the_cookie');
+ * @desc Get the value of a cookie.
+ *
+ * @param String name The name of the cookie.
+ * @return The value of the cookie.
+ * @type String
+ *
+ * @name $.cookie
+ */
+jQuery.cookie = function(name, value, options) {
+    if (typeof value != 'undefined') { // name and value given, set cookie
+        options = options || {};
+        if (value === null) {
+            value = '';
+            options.expires = -1;
+        }
+        var expires = '';
+        if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+            var date;
+            if (typeof options.expires == 'number') {
+                date = new Date();
+                date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));
+            } else {
+                date = options.expires;
+            }
+            expires = '; expires=' + date.toUTCString(); // use expires attribute, max-age is not supported by IE
+        }
+        // CAUTION: Needed to parenthesize options.path and options.domain
+        // in the following expressions, otherwise they evaluate to undefined
+        // in the packed version for some reason...
+        var path = options.path ? '; path=' + (options.path) : '';
+        var domain = options.domain ? '; domain=' + (options.domain) : '';
+        var secure = options.secure ? '; secure' : '';
+        document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+    } else { // only name given, get cookie
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+};
+
+
+var tryNum = "";
+
+//Expires: ## days (0.00347 == 5 minutes)
+var cookieStr = $.cookie('WolframAlphaRetry');
+if ($.cookie('WolframAlphaRetry') == null) {
+  $.cookie('WolframAlphaRetry', '0-0', {expires: 0.00347, path: '/', domain: '.wolframalpha.com'});
+  location.reload(true);
+} else {
+     tryNum = cookieStr.substring(0,1);
+     if (tryNum != "3") {
+		tryNum = parseInt(tryNum)+1;
+  		$.cookie('WolframAlphaRetry', tryNum+cookieStr.substring(1,3), {expires: 0.00347, path: '/', domain: '.wolframalpha.com'});
+		location.reload(true);
+     } else {
+  	    $('body').show();
+        var urlStr = window.location+"";
+        var urlInputStr = urlStr.substring(urlStr.lastIndexOf("input/"), urlStr.length);               
+        var retryServer = parseInt(cookieStr.substring(2,3));
+          if(retryServer == 1) {
+                $.cookie('WolframAlphaRetry', "0-2", {expires: 0.00347, path: '/', domain: '.wolframalpha.com'});
+                document.getElementById("retry-link").href = "http://www2.wolframalpha.com/" + urlInputStr;
+          }
+          else if(retryServer == 2) {
+                $.cookie('WolframAlphaRetry', "0-3", {expires: 0.00347, path: '/', domain: '.wolframalpha.com'}); 
+                document.getElementById("retry-link").href = "http://www4a.wolframalpha.com/" + urlInputStr;
+          }
+          else if(retryServer == 3) {
+                $.cookie('WolframAlphaRetry', "0-4", {expires: 0.00347, path: '/', domain: '.wolframalpha.com'});
+                document.getElementById("retry-link").href = "http://www4c.wolframalpha.com/" + urlInputStr;
+          }
+          else {
+                $.cookie('WolframAlphaRetry', "0-1", {expires: 0.00347, path: '/', domain: '.wolframalpha.com'});
+                document.getElementById("retry-link").href = "http://www4a.wolframalpha.com/" + urlInputStr;
+          }
+
+	 }
+}
+</script>
+
+</html>
+
+<!-- 503 generated by dynamic content server -->

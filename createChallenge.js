@@ -1,16 +1,15 @@
-function createChallenge({ name, body, shortTask, answer, authorName, topics, tags }, imageName) {
+function createChallenge({ date, name, answer, authorName, topics, body, lvl }, fileName) {
     return {
         date: new Date(),
         name: name,
-        body: body,
-        shortTask: shortTask,
         answer: answer,
-        images: imageName, //pull out file name frome the path
-        difficulty: 1,
-        author: authorName,
+        authorName: authorName,
         topics: topics,
-        tags: tags,
+        body: body,
+        fileName: fileName,
+        lvl: lvl
     };
 }
+
 
 module.exports = createChallenge;
