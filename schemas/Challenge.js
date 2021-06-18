@@ -12,7 +12,7 @@ const Challenge = new mongoose.Schema({
   topics: String,
   body: String,
   fileName: String,
-  lvl: Number
+  lvl: String
 });
 
 

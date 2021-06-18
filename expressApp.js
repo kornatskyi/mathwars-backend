@@ -165,7 +165,7 @@ app.post('/challenges', (req, res) => {
     }
     if (filter.lvl) {
         const wordRegex = new RegExp(filter.lvl, "g");
-        localFilter.difficulty = wordRegex;
+        localFilter.lvl = wordRegex;
     }
 
 
@@ -178,12 +178,6 @@ app.post('/challenges', (req, res) => {
         }
         res.send(docs);
     });
-    // Challenge.find({...req.body}).then((doc) => {
-    //     res.send(doc)
-    // }).catch((err) => {
-    //     console.log(err);
-    // })
-
 })
 
 
