@@ -5,6 +5,28 @@ const copyFile = util.promisify(fs.copyFile);
 
 const bodyParser = require('body-parser')
 
+const {google} = require('googleapis');
+function getAccessToken() {
+  return new Promise(function(resolve, reject) {
+    var key = require('./mathwars-49dae-firebase-adminsdk-qx5hp-590c32217b.json');
+    var jwtClient = new google.auth.JWT(
+      key.client_email,
+      null,
+      key.private_key,
+      'https://www.googleapis.com/auth/adsensehost',
+      null
+    );
+    jwtClient.authorize(function(err, tokens) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(tokens.access_token);
+    });
+  });
+}
+getAccessToken().then(promise => console.log(promise))
+
 
 
 /**Server exports*/
@@ -59,7 +81,7 @@ app.use(express.static('images'))
 app.get('/', (req, res) => {
     console.log("Hello");
 
-    res.send('Hello World!')
+    res.send('Hello World!sdfgdf')
 })
 
 
@@ -186,4 +208,6 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
 
+
+module.exports = app;
 

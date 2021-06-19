@@ -1,0 +1,9 @@
+{
+"hosting": {
+    "rewrites": [{
+        "sourse":"/timestamp",
+        "function":"app"
+    }]
+}
+
+}
