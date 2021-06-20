@@ -1,3 +1,8 @@
 .git
 node_modules
+functions
+data
+.firebaserc
+rest.http
+mathwars-49dae-firebase-adminsdk-qx5hp-590c32217b.json
 
